@@ -67,7 +67,7 @@ const TransactionHistory: React.FC = () => {
                     const source = info.source;
                     const destination = info.destination;
                 
-                    // const authority = info.authority;
+                  
                     if (source === userKeyString || destination === userKeyString) {
                         involvesUser = true;
                         const sourcePart = source === userKeyString ? 'You' : `${source?.substring(0, 4)}...`;
@@ -101,7 +101,7 @@ const TransactionHistory: React.FC = () => {
                     return null; 
             }
         } catch (parseError) {
-            console.error("Error parsing SPL instruction info:", parseError, ix);
+            // console.error("Error parsing SPL instruction info:", parseError, ix);
             return null;
         }
         return involvesUser ? { type: simpleType, details } : null;
@@ -191,7 +191,7 @@ const TransactionHistory: React.FC = () => {
         setError(null);
 
         const beforeSignature = pageSignatures[targetPageIndex];
-        console.log(`Fetching page ${targetPageIndex + 1}, using 'before': ${beforeSignature ?? 'start'}`);
+        // console.log(`Fetching page ${targetPageIndex + 1}, using 'before': ${beforeSignature ?? 'start'}`);
 
         let signaturesInfo: ConfirmedSignatureInfo[] = [];
 
@@ -203,7 +203,7 @@ const TransactionHistory: React.FC = () => {
             );
 
             if (!signaturesInfo || signaturesInfo.length === 0) {
-                console.log("No more transaction signatures found.");
+                // console.log("No more transaction signatures found.");
                 setTransactions([]);
                 setCanGoNext(false);
                 setCurrentPageIndex(targetPageIndex);
@@ -211,7 +211,7 @@ const TransactionHistory: React.FC = () => {
                 return;
             }
 
-            console.log(`Fetched ${signaturesInfo.length} signatures. Getting details...`);
+            // console.log(`Fetched ${signaturesInfo.length} signatures. Getting details...`);
 
             const processedTxs: SimpleTransaction[] = [];
              for (const sigInfo of signaturesInfo) {
@@ -231,7 +231,7 @@ const TransactionHistory: React.FC = () => {
                          });
                      }
                  } catch (detailError: any) { 
-                     console.error(`Failed to fetch details for ${sigInfo.signature}:`, detailError);
+                    //  console.error(`Failed to fetch details for ${sigInfo.signature}:`, detailError);
                      processedTxs.push({
                          signature: sigInfo.signature, blockTime: sigInfo.blockTime,
                          status: "Failed (Detail Fetch)", type: "Fetch Error",
@@ -260,13 +260,13 @@ const TransactionHistory: React.FC = () => {
                      newSigs[targetPageIndex + 1] = nextBeforeSignature;
                      return newSigs;
                  });
-                 console.log(`Stored 'before' for page ${targetPageIndex + 2}: ${nextBeforeSignature.substring(0,6)}...`);
+                //  console.log(`Stored 'before' for page ${targetPageIndex + 2}: ${nextBeforeSignature.substring(0,6)}...`);
             } else {
                 setPageSignatures(prev => prev.slice(0, targetPageIndex + 1));
-                 console.log(`Fetched < ${ITEMS_PER_PAGE} sigs, end of history.`);
+                //  console.log(`Fetched < ${ITEMS_PER_PAGE} sigs, end of history.`);
              }
          } catch (err: any) {
-             console.error(`Failed to fetch signature list for page ${targetPageIndex + 1}:`, err);
+            //  console.error(`Failed to fetch signature list for page ${targetPageIndex + 1}:`, err);
               const isRateLimit = err instanceof Error && (err.message.includes('429') || (err as any)?.code === 429 || JSON.stringify(err).includes('429'));
              const displayError = isRateLimit
                  ? "Rate limit exceeded fetching signatures. Try again shortly."
@@ -322,52 +322,123 @@ const TransactionHistory: React.FC = () => {
     const explorerNetwork = getExplorerNetwork(); 
 
     return (
-        <div className="transaction-history-container space-y-4 p-4 md:p-6 bg-white dark:bg-gray-800 rounded-lg shadow border border-gray-200 dark:border-gray-700">
-            <h3 className="text-lg font-semibold mb-4 text-gray-800 dark:text-white">Transaction History</h3>
+        <div className="transaction-history-container space-y-4 p-4 md:p-6 bg-white rounded-lg shadow border border-gray-200">
+  <h3 className="text-lg font-semibold mb-4 text-gray-800">Transaction History</h3>
 
-             {isLoading && ( <div className="flex justify-center items-center p-6 text-gray-600 dark:text-gray-400"> <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-indigo-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"> <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle> <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path> </svg> <span>Loading transactions...</span> </div> )}
+  {isLoading && (
+    <div className="flex justify-center items-center p-6 text-gray-600">
+      <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-indigo-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+      </svg>
+      <span>Loading transactions...</span>
+    </div>
+  )}
 
-             {!isLoading && error && ( <div className="text-center p-4 bg-red-50 dark:bg-red-900/50 border border-red-300 dark:border-red-700 rounded text-red-700 dark:text-red-300"> <p className="font-medium">Error</p> <p className="text-sm">{error}</p> </div> )}
+  {!isLoading && error && (
+    <div className="text-center p-4 bg-red-50 border border-red-300 rounded text-red-700">
+      <p className="font-medium">Error</p>
+      <p className="text-sm">{error}</p>
+    </div>
+  )}
 
-            {!isLoading && transactions.length > 0 && (
-                 <div className="transaction-history-list space-y-3">
-                     {transactions.map((tx) => (
-                         <div key={tx.signature} className={`p-3 rounded-lg shadow-sm border transition-opacity duration-300 ${ tx.status.includes('Failed') || tx.type.includes('Error') ? 'bg-red-50 dark:bg-red-900/30 border-red-200 dark:border-red-700/50 opacity-80' : 'bg-gray-50 dark:bg-gray-800/60 border-gray-200 dark:border-gray-700' }`}>
-                             <div className="flex justify-between items-start mb-1 gap-2">
-                              
-                                  <span className={`text-xs font-semibold px-1.5 py-0.5 rounded-full leading-tight whitespace-nowrap shrink-0 ${ tx.type.includes("Mint") ? 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200' : tx.type.includes("Transfer") ? 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200' : tx.type.includes("Create") ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200' : tx.type.includes("Program") ? 'bg-cyan-100 text-cyan-800 dark:bg-cyan-900 dark:text-cyan-200' : tx.type.includes("SOL") ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200' : tx.type.includes("Error") ? 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200' : 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300' }`}> {tx.type} </span>
-                                 
-                                  <span className="text-xs text-gray-500 dark:text-gray-400 text-right whitespace-nowrap"> {tx.blockTime ? new Date(tx.blockTime * 1000).toLocaleString(undefined, { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' }) : 'No timestamp'} {tx.status !== 'Success' && <span className="ml-1 text-red-500 dark:text-red-400 font-medium">({tx.status})</span>} </span>
-                             </div>
-                            <p className="text-sm text-gray-700 dark:text-gray-300 mb-1.5 break-words" title={tx.details}> {tx.details || ' '} </p>
-                            
-                             <div className="text-xs">
-                             
-                                 <span className="text-indigo-600 hover:text-indigo-800 dark:text-indigo-400 dark:hover:text-indigo-300">
-                                     <SolanaExplorerLink
-                                         type="tx"
-                                         value={tx.signature}
-                                         network={explorerNetwork}
-                                         label={`Tx: ${tx.signature.substring(0, 6)}...${tx.signature.substring(tx.signature.length - 4)}`}
-                                     />
-                                 </span>
-                            </div>
-                         </div>
-                    ))}
-                </div>
-            )}
+  {!isLoading && transactions.length > 0 && (
+    <div className="transaction-history-list space-y-3">
+      {transactions.map((tx) => (
+        <div
+          key={tx.signature}
+          className={`p-3 rounded-lg shadow-sm border transition-opacity duration-300 ${
+            tx.status.includes('Failed') || tx.type.includes('Error')
+              ? 'bg-red-50 border-red-200 opacity-80'
+              : 'bg-gray-50 border-gray-200'
+          }`}
+        >
+          <div className="flex justify-between items-start mb-1 gap-2">
+            <span
+              className={`text-xs font-semibold px-1.5 py-0.5 rounded-full leading-tight whitespace-nowrap shrink-0 ${
+                tx.type.includes('Mint')
+                  ? 'bg-blue-100 text-blue-800'
+                  : tx.type.includes('Transfer')
+                  ? 'bg-purple-100 text-purple-800'
+                  : tx.type.includes('Create')
+                  ? 'bg-yellow-100 text-yellow-800'
+                  : tx.type.includes('Program')
+                  ? 'bg-cyan-100 text-cyan-800'
+                  : tx.type.includes('SOL')
+                  ? 'bg-green-100 text-green-800'
+                  : tx.type.includes('Error')
+                  ? 'bg-red-100 text-red-800'
+                  : 'bg-gray-100 text-gray-800'
+              }`}
+            >
+              {tx.type}
+            </span>
 
-             {!isLoading && !error && transactions.length === 0 && currentPageIndex === 0 && ( <div className="text-center p-6 text-gray-500 dark:text-gray-400"> No transaction history found. </div> )}
-            {!isLoading && !error && transactions.length === 0 && currentPageIndex > 0 && ( <div className="text-center p-6 text-gray-500 dark:text-gray-400"> End of transaction history. </div> )}
+            <span className="text-xs text-gray-500 text-right whitespace-nowrap">
+              {tx.blockTime
+                ? new Date(tx.blockTime * 1000).toLocaleString(undefined, {
+                    month: 'short',
+                    day: 'numeric',
+                    hour: 'numeric',
+                    minute: '2-digit',
+                  })
+                : 'No timestamp'}
+              {tx.status !== 'Success' && (
+                <span className="ml-1 text-red-500 font-medium">({tx.status})</span>
+              )}
+            </span>
+          </div>
+          <p className="text-sm text-gray-700 mb-1.5 break-words" title={tx.details}>
+            {tx.details || ' '}
+          </p>
 
-             { (!error && (isLoading || currentPageIndex > 0 || canGoNext || (transactions.length > 0 && currentPageIndex === 0)) ) && ( // Logic to show pagination controls
-                 <div className="flex justify-between items-center mt-6 pt-4 border-t border-gray-200 dark:border-gray-700">
-                     <button onClick={handlePrevious} disabled={currentPageIndex === 0 || isLoading} className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed dark:bg-gray-700 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-600 dark:disabled:bg-gray-800 dark:disabled:text-gray-500"> Previous </button>
-                     <span className="text-sm text-gray-700 dark:text-gray-300"> Page {currentPageIndex + 1} {isLoading && transactions.length > 0 && ' (Loading...)'} </span>
-                     <button onClick={handleNext} disabled={!canGoNext || isLoading} className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed dark:bg-gray-700 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-600 dark:disabled:bg-gray-800 dark:disabled:text-gray-500"> Next </button>
-                 </div>
-              ) }
+          <div className="text-xs">
+            <span className="text-indigo-600 hover:text-indigo-800">
+              <SolanaExplorerLink
+                type="tx"
+                value={tx.signature}
+                network={explorerNetwork}
+                label={`Tx: ${tx.signature.substring(0, 6)}...${tx.signature.substring(tx.signature.length - 4)}`}
+              />
+            </span>
+          </div>
         </div>
+      ))}
+    </div>
+  )}
+
+  {!isLoading && !error && transactions.length === 0 && currentPageIndex === 0 && (
+    <div className="text-center p-6 text-gray-500">No transaction history found.</div>
+  )}
+
+  {!isLoading && !error && transactions.length === 0 && currentPageIndex > 0 && (
+    <div className="text-center p-6 text-gray-500">End of transaction history.</div>
+  )}
+
+  {(!error &&
+    (isLoading || currentPageIndex > 0 || canGoNext || (transactions.length > 0 && currentPageIndex === 0))) && (
+    <div className="flex justify-between items-center mt-6 pt-4 border-t border-gray-200">
+      <button
+        onClick={handlePrevious}
+        disabled={currentPageIndex === 0 || isLoading}
+        className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed"
+      >
+        Previous
+      </button>
+      <span className="text-sm text-gray-700">
+        Page {currentPageIndex + 1} {isLoading && transactions.length > 0 && ' (Loading...)'}
+      </span>
+      <button
+        onClick={handleNext}
+        disabled={!canGoNext || isLoading}
+        className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed"
+      >
+        Next
+      </button>
+    </div>
+  )}
+</div>
+
     );
 };
 

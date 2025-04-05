@@ -77,7 +77,7 @@ const AccountDetails: React.FC = () => {
             const balance = await connection.getBalance(publicKey);
             setSolBalance(balance / LAMPORTS_PER_SOL);
         } catch (err: any) {
-            console.error("Failed to fetch SOL balance:", err);
+            // console.error("Failed to fetch SOL balance:", err);
             setErrorSol(`Failed to fetch SOL balance: ${err.message}`);
             setSolBalance(null);
         } finally {
@@ -189,7 +189,7 @@ const AccountDetails: React.FC = () => {
                     setTimeout(() => setCopied(false), 2000);
                 })
                 .catch(err => {
-                    console.error('Failed to copy address: ', err);
+                    // console.error('Failed to copy address: ', err);
                     toast.error("Failed to copy address.");
                 });
         }
@@ -212,112 +212,104 @@ const AccountDetails: React.FC = () => {
 
     return (
         <>
-   
-            <div className="p-4 md:p-6 bg-white dark:bg-gray-800 rounded-lg shadow border border-gray-200 dark:border-gray-700 mb-6">
-                <h3 className="text-lg font-semibold mb-4 text-gray-800 dark:text-white">Account Info</h3>
-                <div className="space-y-3 text-sm">
-                     {/* Address Row */}
-                     <div className="flex items-center justify-between">
-                        <span className="font-medium text-gray-600 dark:text-gray-400">Address:</span>
-                         <div className="flex items-center space-x-2 text-gray-800 dark:text-gray-200">
-                             {/* Ensure code tag uses appropriate font and breaks */}
-                             <code className="text-xs md:text-sm break-all font-mono">{publicKey.toBase58()}</code>
-                             <button onClick={handleCopyAddress} className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 focus:outline-none" title="Copy Address">
-                                 {copied ? <FaCheck className="text-green-500 h-4 w-4" /> : <FaCopy className="h-4 w-4"/>}
-                            </button>
-                         </div>
-                    </div>
-                
-                     <div className="flex items-center justify-between">
-                         <span className="font-medium text-gray-600 dark:text-gray-400">Network:</span>
-                         <span className={`px-2 py-0.5 rounded-full text-xs font-semibold ${
-                             network === 'Mainnet' ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200' :
-                             network === 'Devnet' ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200' :
-                             network === 'Testnet' ? 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200' :
-                             network === 'Localhost' ? 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200' : // Added style for Localhost
-                             'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300' // Unknown/Default
-                         }`}>
-                            {network}
-                         </span>
-                     </div>
-                     <div className="flex items-center justify-between">
-                         <span className="font-medium text-gray-600 dark:text-gray-400">SOL Balance:</span>
-                         <div className='flex items-center'>
-                             {isLoadingSol && renderLoading("Fetching SOL...")}
-                             {!isLoadingSol && solBalance !== null && (
-                                 <span className="font-semibold text-gray-800 dark:text-gray-200">
-                                     {/* Adjust formatting as needed */}
-                                     {solBalance.toLocaleString(undefined, { minimumFractionDigits: 4, maximumFractionDigits: 9 })} SOL
-                                 </span>
-                             )}
-                             {!isLoadingSol && solBalance === null && !errorSol && !isLoadingSol && <span className='text-gray-500 dark:text-gray-400'>N/A</span>}
-                              {!isLoadingSol && errorSol && renderError(errorSol)}
-                          </div>
-                     </div>
-                 </div>
-            </div>
+  <div className="p-4 md:p-6 bg-white rounded-lg shadow border border-gray-200 mb-6">
+    <h3 className="text-lg font-semibold mb-4 text-gray-800">Account Info</h3>
+    <div className="space-y-3 text-sm">
+      <div className="flex items-center justify-between">
+        <span className="font-medium text-gray-600">Address:</span>
+        <div className="flex items-center space-x-2 text-gray-800">
+          <code className="text-xs md:text-sm break-all font-mono">{publicKey.toBase58()}</code>
+          <button onClick={handleCopyAddress} className="text-gray-500 hover:text-gray-700 focus:outline-none" title="Copy Address">
+            {copied ? <FaCheck className="text-green-500 h-4 w-4" /> : <FaCopy className="h-4 w-4" />}
+          </button>
+        </div>
+      </div>
 
-             {/* Token Holdings Box */}
-             <div className="p-4 md:p-6 bg-white dark:bg-gray-800 rounded-lg shadow border border-gray-200 dark:border-gray-700">
-                 <h3 className="text-lg font-semibold mb-4 text-gray-800 dark:text-white">Token Holdings</h3>
-                 {/* Loading State */}
-                {isLoadingTokens && renderLoading("Loading tokens...")}
-                 {/* Error State */}
-                 {!isLoadingTokens && errorTokens && (
-                    <div className="text-center p-4 text-red-600 dark:text-red-400 text-sm border border-red-200 dark:border-red-700 rounded-md bg-red-50 dark:bg-red-900/30">
-                         {errorTokens}
-                    </div>
-                )}
-                 {/* Empty State */}
-                 {!isLoadingTokens && tokenBalances.length === 0 && !errorTokens && (
-                     <div className="text-center p-4 text-gray-500 dark:text-gray-400 text-sm">
-                        No SPL tokens found in this wallet (with a non-zero balance).
-                     </div>
-                )}
-                 {/* Data State */}
-                 {!isLoadingTokens && tokenBalances.length > 0 && (
-                     <div className="overflow-x-auto">
-                         {/* Token Table */}
-                         <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700 text-sm">
-                             <thead className="bg-gray-50 dark:bg-gray-700/50">
-                                <tr>
-                                    <th scope="col" className="px-4 py-2 text-left font-medium text-gray-500 dark:text-gray-400 tracking-wider">
-                                         Token (Mint)
-                                     </th>
-                                     <th scope="col" className="px-4 py-2 text-right font-medium text-gray-500 dark:text-gray-400 tracking-wider">
-                                         Balance
-                                     </th>
-                                 </tr>
-                            </thead>
-                            <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
-                                {tokenBalances.map((token) => (
-                                    <tr key={token.mintAddress}>
-                                        {/* Token Mint Address Column */}
-                                        <td className="px-4 py-3 whitespace-nowrap">
-                                            {/* Wrapper span for styling the link - Fix for TS2322 */}
-                                             <span className="hover:brightness-110"> {/* Example subtle hover on wrapper */}
-                                                <SolanaExplorerLink
-                                                     type="address" // Changed to 'address' which works for mints
-                                                    value={token.mintAddress}
-                                                     // Pass the correctly formatted network name
-                                                     network={getExplorerNetwork(network)}
-                                                     label={`${token.mintAddress.substring(0, 6)}...${token.mintAddress.substring(token.mintAddress.length - 6)}`}
-                                                    // Removed className from here, link styles are in SolanaExplorerLink component
-                                                 />
-                                            </span>
-                                         </td>
-                                         {/* Token Balance Column */}
-                                         <td className="px-4 py-3 whitespace-nowrap text-right text-gray-800 dark:text-gray-200 font-medium">
-                                            {token.balance}
-                                         </td>
-                                    </tr>
-                                ))}
-                            </tbody>
-                         </table>
-                     </div>
-                )}
-             </div>
-        </>
+      <div className="flex items-center justify-between">
+        <span className="font-medium text-gray-600">Network:</span>
+        <span className={`px-2 py-0.5 rounded-full text-xs font-semibold ${
+            network === 'Mainnet' ? 'bg-green-100 text-green-800' :
+            network === 'Devnet' ? 'bg-yellow-100 text-yellow-800' :
+            network === 'Testnet' ? 'bg-blue-100 text-blue-800' :
+            network === 'Localhost' ? 'bg-purple-100 text-purple-800' :
+            'bg-gray-100 text-gray-800'}`}>
+          {network}
+        </span>
+      </div>
+      <div className="flex items-center justify-between">
+        <span className="font-medium text-gray-600">SOL Balance:</span>
+        <div className="flex items-center">
+          {isLoadingSol && renderLoading("Fetching SOL...")}
+          {!isLoadingSol && solBalance !== null && (
+            <span className="font-semibold text-gray-800">
+              {solBalance.toLocaleString(undefined, { minimumFractionDigits: 4, maximumFractionDigits: 9 })} SOL
+            </span>
+          )}
+          {!isLoadingSol && solBalance === null && !errorSol && !isLoadingSol && <span className="text-gray-500">N/A</span>}
+          {!isLoadingSol && errorSol && renderError(errorSol)}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div className="p-4 md:p-6 bg-white rounded-lg shadow border border-gray-200">
+    <h3 className="text-lg font-semibold mb-4 text-gray-800">Token Holdings</h3>
+
+    {isLoadingTokens && renderLoading("Loading tokens...")}
+
+    {!isLoadingTokens && errorTokens && (
+      <div className="text-center p-4 text-red-600 text-sm border border-red-200 rounded-md bg-red-50">
+        {errorTokens}
+      </div>
+    )}
+
+    {!isLoadingTokens && tokenBalances.length === 0 && !errorTokens && (
+      <div className="text-center p-4 text-gray-500 text-sm">
+        No SPL tokens found in this wallet (with a non-zero balance).
+      </div>
+    )}
+
+    {!isLoadingTokens && tokenBalances.length > 0 && (
+      <div className="overflow-x-auto">
+        {/* Token Table */}
+        <table className="min-w-full divide-y divide-gray-200 text-sm">
+          <thead className="bg-gray-50">
+            <tr>
+              <th scope="col" className="px-4 py-2 text-left font-medium text-gray-500 tracking-wider">
+                Token (Mint)
+              </th>
+              <th scope="col" className="px-4 py-2 text-right font-medium text-gray-500 tracking-wider">
+                Balance
+              </th>
+            </tr>
+          </thead>
+          <tbody className="bg-white divide-y divide-gray-200">
+            {tokenBalances.map((token) => (
+              <tr key={token.mintAddress}>
+                {/* Token Mint Address Column */}
+                <td className="px-4 py-3 whitespace-nowrap">
+                  <span className="hover:brightness-110">
+                    <SolanaExplorerLink
+                      type="address" // Changed to 'address' which works for mints
+                      value={token.mintAddress}
+                      network={getExplorerNetwork(network)}
+                      label={`${token.mintAddress.substring(0, 6)}...${token.mintAddress.substring(token.mintAddress.length - 6)}`}
+                    />
+                  </span>
+                </td>
+                {/* Token Balance Column */}
+                <td className="px-4 py-3 whitespace-nowrap text-right text-gray-800 font-medium">
+                  {token.balance}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    )}
+  </div>
+</>
+
     );
 };
 

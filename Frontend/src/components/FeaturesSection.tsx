@@ -45,36 +45,37 @@ export default function FeaturesSection() {
   ]
 
   return (
-    <section className="w-full py-20 bg-gradient-to-b from-background to-purple-50 dark:from-background dark:to-purple-950/10">
-      <div className="container px-4 md:px-6">
-        <div className="flex flex-col items-center justify-center space-y-4 text-center">
-          <div className="space-y-2">
-            <div className="inline-block rounded-lg bg-purple-100 dark:bg-purple-900/30 px-3 py-1 text-sm">
-              Powerful Features
-            </div>
-            <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl">
-              Everything You Need for Your NFT Journey
-            </h2>
-            <p className="max-w-[700px] text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
-              Our platform provides all the tools you need to create, collect, and trade NFTs with ease.
-            </p>
-          </div>
+    <section className="w-full py-20 bg-gradient-to-b from-background to-purple-50">
+  <div className="container px-4 md:px-6">
+    <div className="flex flex-col items-center justify-center space-y-4 text-center">
+      <div className="space-y-2">
+        <div className="inline-block rounded-lg bg-purple-100 px-3 py-1 text-sm">
+          Powerful Features
         </div>
-        <div className="mx-auto grid max-w-5xl grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-4 lg:gap-12 mt-16">
-          {features.map((feature, index) => (
-            <div
-              key={index}
-              className="relative overflow-hidden rounded-lg border bg-background p-6 shadow-sm transition-all hover:shadow-md hover:-translate-y-1"
-            >
-              <div className="absolute top-0 right-0 h-20 w-20 bg-gradient-to-bl from-purple-100 to-transparent dark:from-purple-900/20 dark:to-transparent rounded-bl-full"></div>
-              <div className="mb-4">{feature.icon}</div>
-              <h3 className="text-xl font-bold">{feature.title}</h3>
-              <p className="text-muted-foreground mt-2">{feature.description}</p>
-            </div>
-          ))}
-        </div>
+        <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl">
+          Everything You Need for Your NFT Journey
+        </h2>
+        <p className="max-w-[700px] text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
+          Our platform provides all the tools you need to create, collect, and trade NFTs with ease.
+        </p>
       </div>
-    </section>
+    </div>
+    <div className="mx-auto grid max-w-5xl grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-4 lg:gap-12 mt-16">
+      {features.map((feature, index) => (
+        <div
+          key={index}
+          className="relative overflow-hidden rounded-lg border bg-background p-6 shadow-sm transition-all hover:shadow-md hover:-translate-y-1"
+        >
+          <div className="absolute top-0 right-0 h-20 w-20 bg-gradient-to-bl from-purple-100 to-transparent rounded-bl-full"></div>
+          <div className="mb-4">{feature.icon}</div>
+          <h3 className="text-xl font-bold">{feature.title}</h3>
+          <p className="text-muted-foreground mt-2">{feature.description}</p>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
+
   )
 }
 
