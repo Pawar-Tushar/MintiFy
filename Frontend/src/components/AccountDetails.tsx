@@ -189,7 +189,7 @@ const AccountDetails: React.FC = () => {
                     setTimeout(() => setCopied(false), 2000);
                 })
                 .catch(err => {
-                    // console.error('Failed to copy address: ', err);
+                    console.error('Failed to copy address: ', err);
                     toast.error("Failed to copy address.");
                 });
         }

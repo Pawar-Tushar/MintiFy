@@ -10,7 +10,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import SendPage from './pages/SendPage';
 import HistoryPage from './pages/HistoryPage'; 
 import PortfolioPage from './pages/PortfolioPage'; 
-
+import DocsPage from './pages/Docs';
 
 const App: React.FC = () => {
   // const { connected, publicKey } = useWallet();
@@ -28,6 +28,7 @@ const App: React.FC = () => {
               <Route path="/send" element={<SendPage />} />
               <Route path="/history" element={<HistoryPage />} />
               <Route path="/portfolio" element={<PortfolioPage />} /> 
+              <Route path="/docs" element={<DocsPage />} />
             </Routes>
         </main>
 

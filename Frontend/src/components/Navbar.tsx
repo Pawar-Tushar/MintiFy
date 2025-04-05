@@ -5,11 +5,12 @@ import { Link } from 'react-router-dom';
 export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const navigation = [
-    { name: 'Token Creator', href: '/create' },
-    { name: 'Mint Token', href: '/mint' },
-    { name: 'Send Token', href: '/send' },
-    { name: 'Recent', href: '/history' },
+    { name: 'Create', href: '/create' },
+    { name: 'Mint', href: '/mint' },
+    { name: 'Send', href: '/send' },
+    { name: 'history', href: '/history' },
     { name: 'Portfolio', href: '/portfolio' }, 
+    {name: 'Docs', href:'/docs'},
   ];
 
   return (
