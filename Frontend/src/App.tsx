@@ -1,7 +1,5 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-// import { useWallet } from '@solana/wallet-adapter-react';
-
 import HomePage from './pages/Home'; 
 import CreatePage from './pages/Create'; 
 import Navbar from './components/Navbar'; 
@@ -19,7 +17,7 @@ const App: React.FC = () => {
 
   return (
     <Router>
-      <div className="flex flex-col min-h-screen bg-gray-100 dark:bg-gray-900">
+      <div className="flex flex-col min-h-screen bg-gray-100">
         <Navbar />
 
         <main className="flex-grow container mx-auto px-4 md:px-6 py-8"> 
